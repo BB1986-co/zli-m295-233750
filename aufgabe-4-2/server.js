@@ -6,7 +6,7 @@ const port = 3000;
 app.use(express.json());
 
 // generated with ChatGPT
-const books = [
+let books = [
   { isbn: "978-0143124177", title: "The Goldfinch", year: "2013", author: "Donna Tartt" },
   { isbn: "978-0307277671", title: "The Road", year: "2006", author: "Cormac McCarthy" },
   { isbn: "978-0553386790", title: "The Book Thief", year: "2005", author: "Markus Zusak" },
@@ -18,6 +18,21 @@ const books = [
   { isbn: "978-0143039433", title: "Never Let Me Go", year: "2005", author: "Kazuo Ishiguro" },
   { isbn: "978-0345804310", title: "Gone Girl", year: "2012", author: "Gillian Flynn" }
 ];
+
+// Endpoint zum Ausleihen eines Buchs
+app.post('/lends/:isbn', (req, res) => {
+  const bookId = parseInt(req.params.id);
+  const bookToLend = books.find((book) => book.id === bookId);
+
+  if (!bookToLend) {
+    return res.status(404).json({ message: 'Buch nicht gefunden' });
+  }
+
+  // Hier kannst du die Logik für das Ausleihen des Buchs implementieren.
+  // Zum Beispiel: Markiere das Buch als ausgeliehen oder füge es zu einer Ausleihliste hinzu.
+
+  return res.json({ message: 'Buch erfolgreich ausgeliehen' });
+});
 
 app.get('/books/{isbn}', (request, response) => {
   response.send(books);
@@ -36,3 +51,14 @@ app.post('/books', (request,response) => {
     books.push(request.body);
     response.send(books);
 });
+
+app.put('/books/:isbn',(request,response) =>{
+  books.map((books) = book.isbn === request.params.isbn ? request.body : book);
+  response.send(books)
+});
+
+app.delete('/books/:isbn', (request,response) => {
+  books = books.filter((book) => book.isbn !== request.params.isbn);
+  response.send(books)
+});
+
