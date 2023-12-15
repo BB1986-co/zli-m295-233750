@@ -25,7 +25,7 @@ app.get('/:zip', (request, response) => {
       response.send(String(data.currentWeather.temperature));
     }
   });
-});
+}); 
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
