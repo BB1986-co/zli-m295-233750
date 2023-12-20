@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-// Hier lade ich die express Json Middleware, damit ich an meine Endpunkte, direkt Json senden kann.
+// Hier lade ich die Express JSON Middleware, damit ich an meine Endpunkte JSON-Daten im Body senden kann und diese direkt als JavaScript Objekt verfügbar werden.
 app.use(express.json());
 
 // generated with ChatGPT
@@ -19,46 +19,50 @@ let books = [
   { isbn: "978-0345804310", title: "Gone Girl", year: "2012", author: "Gillian Flynn" }
 ];
 
-// Endpoint zum Ausleihen eines Buchs
-app.post('/lends/:isbn', (req, res) => {
-  const bookId = parseInt(req.params.id);
-  const bookToLend = books.find((book) => book.id === bookId);
-
-  if (!bookToLend) {
-    return res.status(404).json({ message: 'Buch nicht gefunden' });
-  }
-
-  // Hier kannst du die Logik für das Ausleihen des Buchs implementieren.
-  // Zum Beispiel: Markiere das Buch als ausgeliehen oder füge es zu einer Ausleihliste hinzu.
-
-  return res.json({ message: 'Buch erfolgreich ausgeliehen' });
-});
-
-app.get('/books/{isbn}', (request, response) => {
+app.get('/books', (request, response) => {
   response.send(books);
 });
 
-
 app.get('/books/:isbn', (request, response) => {
-  response.send(books.find((book) => book.isbn === request.params.isbn))
+  response.send(books.find((book) => book.isbn === request.params.isbn ))
+});
+
+app.post('/books', (request, response) => {
+  // immutable manipulation
+  books = [...books, request.body];
+  // mutable manipulation
+  books.push(request.body);
+  response.status(201).send(books);
+});
+
+app.put('/books/:isbn', (request, response) => {
+  books = books.map((book) => book.isbn === request.params.isbn ? request.body : book);
+  /*
+  books = books.map((book) => {
+    if(book.isbn === request.params.isbn) {
+      return request.body;
+    } else {
+      return book;
+    }
+  });
+  */
+  response.send(books);
+});
+
+app.patch('/books/:isbn', (request, response) => {
+  const keys = Object.keys(request.body);
+  const oldBook = books.find((book) => book.isbn === request.params.isbn );
+  keys.forEach((key) => oldBook[key] = request.body[key]);
+  books = books.map((book) => book.isbn === request.params.isbn ? oldBook : book);
+  response.send(books);
+});
+
+app.delete('/books/:isbn', (request, response) => {
+  books = books.filter((book) => book.isbn !== request.params.isbn);
+  response.send(books);
 });
 
 app.listen(port, () => {
   console.log(`Bookstore app listening on port ${port}`);
-});
-
-app.post('/books', (request,response) => {
-    books.push(request.body);
-    response.send(books);
-});
-
-app.put('/books/:isbn',(request,response) =>{
-  books.map((books) = book.isbn === request.params.isbn ? request.body : book);
-  response.send(books)
-});
-
-app.delete('/books/:isbn', (request,response) => {
-  books = books.filter((book) => book.isbn !== request.params.isbn);
-  response.send(books)
 });
 

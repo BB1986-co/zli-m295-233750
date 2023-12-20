@@ -2,10 +2,15 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-app.get('/now?tz=', (request, response) => {
-  
-    const now = new Date().toLocaleTimeString()   
-    response.send(`Es ist gerade: ${now}`)
+const names = ["Julia", "Franz", "Jenny", "Yixuan", "Freddy"];
+
+app.use(express.urlencoded({ extended: true }))
+
+app.post('/names', (request, response) => {
+  console.log(request.body.name);
+  names.push(request.body.name);
+  console.log(names);
+  response.send(JSON.stringify(names));
 });
 
 app.listen(port, () => {

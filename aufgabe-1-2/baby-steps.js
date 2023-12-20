@@ -1,10 +1,12 @@
-let zahlen = process.argv.slice(2).map(Number).slice(0, 3);
+let index = 2;
+let sum = 0;
+argv = ['/usr/local/bin/node',
+'/workspaces/zli-m295-233750/aufgabe-1-2/baby-steps.js', '1','2','3'];
 
-let summe = 0;
+while(process.argv[index]){
+    sum = sum + Number(process.argv[index]);
+    ++index;
+}
 
-zahlen.forEach(zahl => {
-    summe += zahl;
-});
-console.log(summe);
-
+console.log(sum);
 
