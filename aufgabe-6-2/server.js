@@ -1,4 +1,19 @@
 const express = require('express');
+
+// Swagger-Ui components
+const swaggerUi = require('swagger-ui-exress');
+const swaggerDocument = require('./swagger.json');
+const YAML = require('yamljs');
+
+YAML.load('/aufgabe-4-2/')
+
+let options = {
+  swaggerOptions:{
+    url: 'http://localhost:3000/swagger-ui/'
+  }
+}
+
+// server components
 const app = express();
 const port = 3000;
 
@@ -19,6 +34,8 @@ let books = [
   { isbn: "978-0143039433", title: "Never Let Me Go", year: "2005", author: "Kazuo Ishiguro" },
   { isbn: "978-0345804310", title: "Gone Girl", year: "2012", author: "Gillian Flynn" }
 ];
+
+let lends = []
 
 app.get('/books', (request, response) => {
   response.send(books);
@@ -61,6 +78,29 @@ app.patch('/books/:isbn', (request, response) => {
 app.delete('/books/:isbn', (request, response) => {
   books = books.filter((book) => book.isbn !== request.params.isbn);
   response.send(books);
+});
+
+// lends
+
+app.get('/lends', (request, response) => {
+  response.send(lends);
+});
+
+app.get('/lends/:id', (request, response) => {
+  response.send(lends.find((lend) => lend.id === request.params.id))
+});
+
+app.post('/lends', (request, response) => {
+  const newLend = request.body;
+  newLend['borrowed_at'] = new Date().toISOString();
+  lends = [...lends, request.body];
+  response.status(201).send(lends);
+});
+
+app.delete('/lends/:id', (request, response) => {
+  const returnedLend = lends.find((lend) => lend.id === request.params.id)
+  returnedLend['returned_at'] = new Date().toISOString();
+  response.send(lends);
 });
 
 app.listen(port, () => {

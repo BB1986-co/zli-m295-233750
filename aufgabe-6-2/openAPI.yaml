@@ -1,0 +1,64 @@
+# Basis mit chat gpt generiert
+
+openapi: "3.0.0"
+info:
+  title: "Lend books API"
+  version: "1.0.0"
+  description: "Eine Beispiel-API zur Demonstration der Swagger/OpenAPI-Spezifikation."
+
+servers:
+  - url: "https://api.beispiel.de/v1"
+    description: "Produktions-Server"
+
+paths:
+  /produkte:
+    get:
+      summary: "Liste aller Produkte"
+      description: "Ruft eine Liste aller Produkte ab."
+      responses:
+        '200':
+          description: "Erfolgreiche Antwort mit Produkten."
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Produkt'
+
+  /produkte/{produktId}:
+    get:
+      summary: "Details eines Produkts"
+      description: "Ruft Details eines spezifischen Produkts ab."
+      parameters:
+        - in: path
+          name: produktId
+          required: true
+          schema:
+            type: integer
+          description: "Die ID des Produkts."
+      responses:
+        '200':
+          description: "Erfolgreiche Antwort mit Produktdetails."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Produkt'
+        '404':
+          description: "Produkt nicht gefunden."
+
+components:
+  schemas:
+    Produkt:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Beispielprodukt"
+        preis:
+          type: number
+          format: float
+          example: 19.99
